@@ -1,0 +1,5 @@
+#!/bin/bash
+
+sudo kexec -l /boot/vmlinuz --initrd=/boot/initrd.img --reuse-cmdline
+sudo reboot
+#sudo kexec -e
