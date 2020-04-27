@@ -8,6 +8,7 @@ MNT=$P/mnt
 
 MEM=100G
 NCPU=30
+QEMU="/home/patatash/qemu/bin/qemu-system-x86_64"
 
 KERNEL_PARAM='console=ttyS0 ip=dhcp '
 KERNEL_PARAM+=' '
@@ -15,25 +16,23 @@ KERNEL_PARAM+=' '
 mkfifo $FIFO.in $FIFO.out
 mkdir -p $MNT
 
-if [ -z "$1" ] && sudo fsck.ext4 -n /dev/pmem0; then
+if [ -z "$1" ] && fsck.ext4 -n /dev/pmem0; then
 	# Filesystem exists, this is live migration case
 	# In place live migration case
 	INCOMING="-incoming defer"
-	sudo mount -o dax /dev/pmem0 $MNT
+	mount -o dax /dev/pmem0 $MNT
 else
 	# Cold boot case
-	sudo kexec -l /boot/vmlinuz-5.3.0-46-generic --initrd=/boot/initrd.img-5.3.0-46-generic --reuse-cmdline
-	sudo wipefs -f -a /dev/pmem0
-	sudo mkfs.ext4 -F -m 0 -O ^has_journal /dev/pmem0
-	sudo mount -o dax /dev/pmem0 $MNT
-	sudo mkdir $MNT/soleen
-	sudo chown soleen:soleen $MNT/soleen
+	kexec -l /boot/vmlinuz-5.3.0-46-generic --initrd=/boot/initrd.img-5.3.0-46-generic --reuse-cmdline
+	wipefs -f -a /dev/pmem0
+	mkfs.ext4 -F -m 0 -O ^has_journal /dev/pmem0
+	mount -o dax /dev/pmem0 $MNT
 	DO_KEXEC_REBOOT=1
 fi
 
 /home/soleen/qemu/bin/qemu-system-x86_64							\
 	-m $MEM											\
-	-object memory-backend-file,id=mem,size=$MEM,mem-path=$MNT/soleen/vm_mem,share=on	\
+	-object memory-backend-file,id=mem,size=$MEM,mem-path=$MNT/vm_mem,share=on	\
 	-numa node,memdev=mem,nodeid=0								\
 	-smp $NCPU										\
 	-machine q35 										\
@@ -49,12 +48,12 @@ fi
 	$INCOMING										\
 	-append "$KERNEL_PARAM"
 
-sudo umount $MNT
+umount $MNT
 rmdir $MNT
 rm $FIFO.in $FIFO.out
 
 if [ -n "$DO_KEXEC_REBOOT" ]; then
 	echo bye
-	#exit 0
-	sudo kexec -e
+	exit 0
+	kexec -e
 fi

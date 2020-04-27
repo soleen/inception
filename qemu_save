@@ -10,5 +10,5 @@ done
 echo 'migrate_set_capability x-ignore-shared on' > $IN
 echo 'migrate_set_parameter max-bandwidth 0' > $IN
 echo 'stop' > $IN
-echo 'migrate "exec:cat > '$P'/mnt/soleen/vm_save"' > $IN
+echo 'migrate "exec:cat > '$P'/mnt/vm_save"' > $IN
 echo 'quit' > $IN

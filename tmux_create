@@ -3,12 +3,12 @@
 P="$( cd "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 
 cp ~/.bash_profile $P/bash_profile.orig 
-cp $P/bash_profile ~/.bash_profile
+#cp $P/bash_profile ~/.bash_profile
 
 # If previous session did not finish cleanly
-rm $P/monitor_pipe.in $P/monitor_pipe.out
-umount $P/mnt
-rmdir $P/mnt
+sudo rm $P/monitor_pipe.in $P/monitor_pipe.out
+sudo umount $P/mnt
+sudo rmdir $P/mnt
 
 cd $P
-tmux new -s pasha './qemu_run force' \; split-window -h  'bash'
+tmux new -s pasha 'sudo ./qemu_run force' \; split-window -h  'bash'
