@@ -6,8 +6,8 @@ FIFO="$P/monitor_pipe"
 MNT=$P/mnt
 
 
-MEM=100G
-NCPU=30
+MEM=240G
+NCPU=240
 QEMU="/home/patatash/qemu/bin/qemu-system-x86_64"
 
 KERNEL_PARAM='console=ttyS0 ip=dhcp '
@@ -23,29 +23,29 @@ if [ -z "$1" ] && fsck.ext4 -n /dev/pmem0; then
 	mount -o dax /dev/pmem0 $MNT
 else
 	# Cold boot case
-	kexec -l /boot/vmlinuz-5.3.0-46-generic --initrd=/boot/initrd.img-5.3.0-46-generic --reuse-cmdline
+	kexec -l /boot/vmlinuz --initrd=/boot/initrd.img --reuse-cmdline
 	wipefs -f -a /dev/pmem0
 	mkfs.ext4 -F -m 0 -O ^has_journal /dev/pmem0
 	mount -o dax /dev/pmem0 $MNT
 	DO_KEXEC_REBOOT=1
 fi
 
-/home/soleen/qemu/bin/qemu-system-x86_64							\
-	-m $MEM											\
+${QEMU}											\
+	-m $MEM										\
 	-object memory-backend-file,id=mem,size=$MEM,mem-path=$MNT/vm_mem,share=on	\
-	-numa node,memdev=mem,nodeid=0								\
-	-smp $NCPU										\
-	-machine q35 										\
-	-nographic										\
-	-enable-kvm -cpu host									\
-	-kernel $P/sample_vm_bzImage									\
-	-netdev user,hostfwd=tcp::5000-:22,id=netdev0						\
-	-device virtio-net-pci,netdev=netdev0							\
-	-chardev pipe,id=mon0,path=$FIFO							\
-	-mon chardev=mon0,mode=readline								\
-	-chardev stdio,mux=off,id=char0,signal=off						\
-	-serial chardev:char0									\
-	$INCOMING										\
+	-numa node,memdev=mem,nodeid=0							\
+	-smp $NCPU									\
+	-machine q35 									\
+	-nographic									\
+	-enable-kvm -cpu host								\
+	-kernel $P/sample_vm_bzImage							\
+	-netdev user,hostfwd=tcp::5000-:22,id=netdev0					\
+	-device virtio-net-pci,netdev=netdev0						\
+	-chardev pipe,id=mon0,path=$FIFO						\
+	-mon chardev=mon0,mode=readline							\
+	-chardev stdio,mux=off,id=char0,signal=off					\
+	-serial chardev:char0								\
+	$INCOMING									\
 	-append "$KERNEL_PARAM"
 
 umount $MNT
