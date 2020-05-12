@@ -7,6 +7,7 @@ while [ ! -p $IN ]; do
 	sleep 0.1
 done
 
+for ((i = 0; i < 5; i++)); do
 echo 'migrate_set_capability x-ignore-shared on' > $IN
 echo 'migrate_set_parameter max-bandwidth 0' > $IN
 echo 'migrate_incoming "exec:cat '$P'/mnt/vm_save"' > $IN
@@ -16,3 +17,5 @@ sleep 0.1	# How do we fix it?
 echo 'cont' > $IN
 sleep 0.1	# How do we fix it?
 echo 'cont' > $IN
+
+done

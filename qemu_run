@@ -6,11 +6,12 @@ FIFO="$P/monitor_pipe"
 MNT=$P/mnt
 
 
-MEM=240G
-NCPU=240
+MEM=220G
+NCPU=100
+
 QEMU="/home/patatash/qemu/bin/qemu-system-x86_64"
 
-KERNEL_PARAM='console=ttyS0 ip=dhcp '
+KERNEL_PARAM='console=ttyS0 ip=dhcp quiet'
 KERNEL_PARAM+=' '
 
 mkfifo $FIFO.in $FIFO.out
@@ -22,12 +23,9 @@ if [ -z "$1" ] && fsck.ext4 -n /dev/pmem0; then
 	INCOMING="-incoming defer"
 	mount -o dax /dev/pmem0 $MNT
 else
-	# Cold boot case
-	kexec -l /boot/vmlinuz --initrd=/boot/initrd.img --reuse-cmdline
 	wipefs -f -a /dev/pmem0
 	mkfs.ext4 -F -m 0 -O ^has_journal /dev/pmem0
 	mount -o dax /dev/pmem0 $MNT
-	DO_KEXEC_REBOOT=1
 fi
 
 ${QEMU}											\
@@ -51,9 +49,3 @@ ${QEMU}											\
 umount $MNT
 rmdir $MNT
 rm $FIFO.in $FIFO.out
-
-if [ -n "$DO_KEXEC_REBOOT" ]; then
-	echo bye
-	exit 0
-	kexec -e
-fi

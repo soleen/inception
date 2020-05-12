@@ -2,6 +2,6 @@
 # ~/.bash_profile
 #
 [[ -f ~/.bashrc ]] && . ~/.bashrc
-if [ $(tty) = "/dev/tty1" ]; then
-	~/save/tmux_restore
+if [ $(tty) = "/dev/ttyS0" ] || [ $(tty) = "/dev/tty1" ]; then
+	/home/patatash/inception/tmux_restore
 fi
