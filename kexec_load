@@ -1,0 +1,9 @@
+#!/bin/bash
+
+mount /dev/nvme1n1p2 /mnt
+cp /mnt/boot/bzImage_update /tmp/
+umount /mnt
+
+kexec -l /tmp/bzImage_update --reuse-cmdline --append="pasha=tmux_restore"
+
+# quiet console=ttyS0,115200 memmap=248G!6G,1G!248G pasha=continue pasha=continue

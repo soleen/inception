@@ -5,6 +5,6 @@ P="$( cd "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 MNT=$P/mnt
 FIFO="$P/monitor_pipe"
 
-sudo umount $MNT
-sudo rmdir $MNT
-sudo rm $FIFO.*
+umount $MNT
+rmdir $MNT
+rm $FIFO.*

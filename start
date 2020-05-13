@@ -1,0 +1,4 @@
+#!/bin/bash
+
+grep pasha=tmux_restore /proc/cmdline > /dev/null && /inception/tmux_restore
+grep pasha=tmux_create /proc/cmdline > /dev/null && /inception/tmux_create

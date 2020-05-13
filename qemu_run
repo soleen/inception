@@ -9,7 +9,7 @@ MNT=$P/mnt
 MEM=220G
 NCPU=100
 
-QEMU="/home/patatash/qemu/bin/qemu-system-x86_64"
+QEMU="qemu-system-x86_64"
 
 KERNEL_PARAM='console=ttyS0 ip=dhcp quiet'
 KERNEL_PARAM+=' '

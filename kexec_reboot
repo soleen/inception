@@ -1,6 +1,0 @@
-#!/bin/bash
-
-echo 7 >/proc/sys/kernel/printk
-sudo kexec -l /boot/vmlinuz --initrd=/boot/initrd.img --reuse-cmdline
-#sudo reboot
-#sudo kexec -e
