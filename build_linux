@@ -1,0 +1,77 @@
+#!/bin/bash
+
+NPROC=$(getconf _NPROCESSORS_ONLN)
+
+rm -rf rootfs
+mkdir rootfs
+pushd rootfs
+CPIO="poky/build/tmp/deploy/images/genericx86-64/core-image-minimal-genericx86-64.cpio.lz4"
+lz4 -dc ../$CPIO | cpio --extract --make-directories --format=newc --no-absolute-filenames
+
+# Delete uneeded files
+rm -rf ./usr/bin/grub*
+rm -rf ./usr/sbin/grub*
+rm -rf ./usr/share/alsa
+rm -rf ./usr/share/mime
+rm -rf ./usr/share/icons 
+rm -rf ./usr/share/consolefonts
+rm -rf ./usr/share/keymaps
+rm -rf ./usr/lib/grub*
+
+mv ./usr/bin/qemu-system-x86_64 ./q
+rm -rf ./usr/bin/qemu*
+mv  ./q ./usr/bin/qemu-system-x86_64
+rm -r ./boot
+rm -r ./lib/modules/*
+
+pushd ./usr/share/
+mv qemu qemu_bk
+mkdir qemu
+mv qemu_bk/bios-256k.bin qemu/
+mv qemu_bk/efi-e1000e.rom qemu/
+mv qemu_bk/efi-virtio.rom qemu/
+mv qemu_bk/kvmvapic.bin qemu/
+mv qemu_bk/linuxboot.bin qemu/
+mv qemu_bk/linuxboot_dma.bin qemu/
+mv qemu_bk/vgabios-stdvga.bin qemu/
+rm -r qemu_bk
+popd
+popd
+
+mkdir build_linux_out
+cp linux_config build_linux_out/.config
+pushd linux
+make -s -k -j $NPROC O=../build_linux_out olddefconfig
+make -s -k -j $NPROC O=../build_linux_out
+make -s -k -j $NPROC O=../build_linux_out INSTALL_MOD_STRIP=1 INSTALL_MOD_PATH=../rootfs modules_install
+popd
+
+pushd rootfs
+# Update rootfs with custom files
+cp -r ../src ./inception
+
+F="./lib/systemd/system/getty@.service"
+sed -i -e 's/^\(ExecStart *=.*getty \)/\1--autologin root /' $F
+F="./lib/systemd/system/serial-getty@.service"
+sed -i -e 's/^\(ExecStart *=.*getty \)/\1--autologin root /' $F
+
+F="./etc/inittab"
+sed -i 's/1:12345:respawn:\/sbin\/getty 38400 tty1/1:12345:respawn:\/sbin\/agetty --autologin root --noclear 38400 tty1 linux/' $F
+
+#echo "/inception/start" >> ./home/root/.profile
+sed ' /^root/ s#/bin/sh#/bin/bash# ' ./etc/passwd > p
+mv p ./etc/passwd
+echo 'if [ $(tty) = "/dev/ttyS0" ]; then'	>> ./home/root/.bash_profile
+echo '	if grep pasha=tmux_restore /proc/cmdline > /dev/null; then'	>> ./home/root/.bash_profile
+echo '		/inception/tmux_restore'				>> ./home/root/.bash_profile
+echo '	fi'								>> ./home/root/.bash_profile
+echo 'fi'								>> ./home/root/.bash_profile
+# end of update
+
+find . -print0  |   cpio --null --create  --format=newc -R +0:+0 | gzip --fast -c > ../rootfs.cpio.gz
+popd
+
+pushd linux
+make -s -k -j $NPROC O=../build_linux_out
+popd
+cp build_linux_out/arch/x86/boot/bzImage ./
