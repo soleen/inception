@@ -1,0 +1,3 @@
+[submodule "poky"]
+	path = poky
+	url = git@github.com:soleen/poky.git
