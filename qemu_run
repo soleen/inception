@@ -17,6 +17,10 @@ KERNEL_PARAM+=' '
 mkfifo $FIFO.in $FIFO.out
 mkdir -p $MNT
 
+while [ ! -b /dev/pmem0 ]; do
+	sleep 0.1
+done
+
 if [ -z "$1" ] && fsck.ext4 -n /dev/pmem0; then
 	# Filesystem exists, this is live migration case
 	# In place live migration case
@@ -26,6 +30,7 @@ else
 	wipefs -f -a /dev/pmem0
 	mkfs.ext4 -F -m 0 -O ^has_journal /dev/pmem0
 	mount -o dax /dev/pmem0 $MNT
+	cp $P/sample_vm_bzImage $MNT/
 fi
 
 ${QEMU}											\
@@ -36,7 +41,7 @@ ${QEMU}											\
 	-machine q35 									\
 	-nographic									\
 	-enable-kvm -cpu host								\
-	-kernel $P/sample_vm_bzImage							\
+	-kernel $MNT/sample_vm_bzImage							\
 	-netdev user,hostfwd=tcp::5000-:22,id=netdev0					\
 	-device virtio-net-pci,netdev=netdev0						\
 	-chardev pipe,id=mon0,path=$FIFO						\

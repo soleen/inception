@@ -10,7 +10,4 @@ cd $P
 resize
 ./kexec_load
 tmux new -s pasha './qemu_run force' \; split-window -h  'bash'
-reset
-
-
 kexec -e

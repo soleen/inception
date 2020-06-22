@@ -1,4 +1,11 @@
 #!/bin/bash
 
-grep pasha=tmux_restore /proc/cmdline > /dev/null && /inception/tmux_restore
-grep pasha=tmux_create /proc/cmdline > /dev/null && /inception/tmux_create
+rm /home/root/.profile
+
+if [ $(tty) = "/dev/ttyS0" ] ; then
+	if grep pasha=tmux_restore /proc/cmdline > /dev/null; then
+		/inception/tmux_restore
+	elif grep pasha=tmux_create /proc/cmdline > /dev/null; then
+		/inception/tmux_create
+	fi
+fi
