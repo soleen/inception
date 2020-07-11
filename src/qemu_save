@@ -7,5 +7,5 @@ done
 echo 'migrate_set_capability x-ignore-shared on' > /inception/monitor_pipe.in
 echo 'migrate_set_parameter max-bandwidth 0' > /inception/monitor_pipe.in
 echo 'stop' > /inception/monitor_pipe.in
-echo 'migrate "exec:cat > '$P'/mnt/vm_save"' > /inception/monitor_pipe.in
+echo 'migrate "exec:cat > /inception/mnt/vm_save"' > /inception/monitor_pipe.in
 echo 'quit' > /inception/monitor_pipe.in
