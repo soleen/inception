@@ -1,13 +1,10 @@
 #!/bin/bash
 
-# If previous session did not finish cleanly
-rm /inception/monitor_pipe.in /inception/monitor_pipe.out
-umount /inception/mnt
-rmdir /inception/mnt
 cd /inception
 
 # Copy main kernel, and qemu test image
-mount /dev/nvme1n1p2 /mnt
+# mount /dev/nvme1n1p2 /mnt
+mount /dev/nvme0n1p3 /mnt
 cp /mnt/boot/bzImage /inception/
 cp /mnt/boot/sample_vm_bzImage /inception/
 umount /mnt

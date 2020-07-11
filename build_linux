@@ -62,7 +62,7 @@ sed -i 's/1:12345:respawn:\/sbin\/getty 38400 tty1/1:12345:respawn:\/sbin\/agett
 sed ' /^root/ s#/bin/sh#/bin/bash# ' ./etc/passwd > p
 mv p ./etc/passwd
 echo 'if [ $(tty) = "/dev/ttyS0" ]; then'	>> ./home/root/.bash_profile
-echo '	if grep pasha=tmux_restore /proc/cmdline > /dev/null; then'	>> ./home/root/.bash_profile
+echo '	if grep inception=tmux_restore /proc/cmdline > /dev/null; then'	>> ./home/root/.bash_profile
 echo '		/inception/tmux_restore'				>> ./home/root/.bash_profile
 echo '	fi'								>> ./home/root/.bash_profile
 echo 'fi'								>> ./home/root/.bash_profile

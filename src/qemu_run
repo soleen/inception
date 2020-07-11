@@ -2,7 +2,8 @@
 set -e
 
 PMEM_MNT=/inception/mnt
-MEM=220G
+#MEM=220G
+MEM=100G
 NCPU=$(cat /proc/cpuinfo  | grep processor | wc -l)
 
 QEMU="qemu-system-x86_64"
