@@ -1,5 +1,0 @@
-#!/bin/bash
-
-umount /inception/mnt
-rmdir /inception/mnt
-rm /inception/monitor_pipe.*
