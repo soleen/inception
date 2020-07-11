@@ -1,10 +1,5 @@
 #!/bin/bash
 
-P="$( cd "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
-
-MNT=$P/mnt
-FIFO="$P/monitor_pipe"
-
-umount $MNT
-rmdir $MNT
-rm $FIFO.*
+umount /inception/mnt
+rmdir /inception/mnt
+rm /inception/monitor_pipe.*

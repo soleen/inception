@@ -3,9 +3,9 @@
 rm /home/root/.profile
 
 if [ $(tty) = "/dev/ttyS0" ] ; then
-	if grep pasha=tmux_restore /proc/cmdline > /dev/null; then
+	if grep inception=tmux_restore /proc/cmdline > /dev/null; then
 		/inception/tmux_restore
-	elif grep pasha=tmux_create /proc/cmdline > /dev/null; then
+	elif grep inception=tmux_create /proc/cmdline > /dev/null; then
 		/inception/tmux_create
 	fi
 fi
