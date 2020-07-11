@@ -27,7 +27,7 @@ else
 	wipefs -f -a /dev/pmem0
 	mkfs.ext4 -F -m 0 -O ^has_journal /dev/pmem0
 	mount -o dax /dev/pmem0 $PMEM_MNT
-	cp $P/sample_vm_bzImage $PMEM_MNT/
+	cp /inception/sample_vm_bzImage $PMEM_MNT/
 fi
 
 ${QEMU}											\
