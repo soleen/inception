@@ -11,7 +11,7 @@ QEMU="qemu-system-x86_64"
 KERNEL_PARAM='console=ttyS0 ip=dhcp quiet'
 KERNEL_PARAM+=' '
 
-mkfifo /inception/monitor_pipe.in /inception/monitor_pipe.out
+mkfifo /inception/monitor_pipe.in /inception/monitor_pipe.out || true
 mkdir -p $PMEM_MNT
 
 while [ ! -b /dev/pmem0 ]; do
@@ -24,6 +24,7 @@ if [ -z "$1" ] && fsck.ext4 -n /dev/pmem0; then
 	INCOMING="-incoming defer"
 	mount -o dax /dev/pmem0 $PMEM_MNT
 else
+	umount $PMEM_MNT || true
 	wipefs -f -a /dev/pmem0
 	mkfs.ext4 -F -m 0 -O ^has_journal /dev/pmem0
 	mount -o dax /dev/pmem0 $PMEM_MNT
