@@ -2,6 +2,8 @@
 
 NPROC=$(getconf _NPROCESSORS_ONLN)
 
+gcc -static -Os vtime.c -o src/vtime
+
 rm -rf rootfs
 mkdir rootfs
 pushd rootfs
@@ -38,7 +40,7 @@ rm -r qemu_bk
 popd
 popd
 
-mkdir build_linux_out
+mkdir -p build_linux_out
 cp linux_config build_linux_out/.config
 pushd linux
 make -s -k -j $NPROC O=../build_linux_out olddefconfig
@@ -55,8 +57,8 @@ sed -i -e 's/^\(ExecStart *=.*getty \)/\1--autologin root /' $F
 F="./lib/systemd/system/serial-getty@.service"
 sed -i -e 's/^\(ExecStart *=.*getty \)/\1--autologin root /' $F
 
-F="./etc/inittab"
-sed -i 's/1:12345:respawn:\/sbin\/getty 38400 tty1/1:12345:respawn:\/sbin\/agetty --autologin root --noclear 38400 tty1 linux/' $F
+#F="./etc/inittab"
+#sed -i 's/1:12345:respawn:\/sbin\/getty 38400 tty1/1:12345:respawn:\/sbin\/agetty --autologin root --noclear 38400 tty1 linux/' $F
 
 #echo "/inception/start" >> ./home/root/.profile
 sed ' /^root/ s#/bin/sh#/bin/bash# ' ./etc/passwd > p
