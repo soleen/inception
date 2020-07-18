@@ -16,20 +16,14 @@ t2=$(/inception/vtime)
 echo VM RESTORE TIME $((t2-t1))
 
 t1=$(/inception/vtime)
-/inception/qemu_cmd 'cont'
-/inception/qemu_cmd 'cont' # stopping during shutdown, need to start twice...
+while true ; do
+	# Not sure why this is needed ...
+	/inception/qemu_cmd 'cont'
+	echo 'info status' > /inception/monitor_pipe.in
+	L=$(grep -m 1 "VM status" /inception/monitor_pipe.out | awk '{print $3}')
+	[[ "running" = $L ]] && break
+	
+done
 t2=$(/inception/vtime)
 echo VM RESUME TIME $((t2-t1))
 sleep 5
-
-#for ((i = 0; i < 5; i++)); do
-#	echo 'migrate_set_capability x-ignore-shared on' > /inception/monitor_pipe.in
-#	echo 'migrate_set_parameter max-bandwidth 0' > /inception/monitor_pipe.in
-#	echo 'migrate_incoming "exec:cat /inception/mnt/vm_save"' > /inception/monitor_pipe.in
-#	sleep 0.1	# How do we fix it?
-#	echo 'cont' > /inception/monitor_pipe.in
-#	sleep 0.1	# How do we fix it?
-#	echo 'cont' > /inception/monitor_pipe.in
-#	sleep 0.1	# How do we fix it?
-#	echo 'cont' > /inception/monitor_pipe.in
-#done
