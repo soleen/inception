@@ -42,8 +42,8 @@ mkdir build_linux_out
 cp linux_config build_linux_out/.config
 pushd linux
 make -s -k -j $NPROC O=../build_linux_out olddefconfig
-make -s -k -j $NPROC O=../build_linux_out
-make -s -k -j $NPROC O=../build_linux_out INSTALL_MOD_STRIP=1 INSTALL_MOD_PATH=../rootfs modules_install
+#make -s -k -j $NPROC O=../build_linux_out
+#make -s -k -j $NPROC O=../build_linux_out INSTALL_MOD_STRIP=1 INSTALL_MOD_PATH=../rootfs modules_install
 popd
 
 pushd rootfs
