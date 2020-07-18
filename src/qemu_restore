@@ -17,6 +17,7 @@ echo VM RESTORE TIME $((t2-t1))
 
 t1=$(/inception/vtime)
 /inception/qemu_cmd 'cont'
+/inception/qemu_cmd 'cont' # stopping during shutdown, need to start twice...
 t2=$(/inception/vtime)
 echo VM RESUME TIME $((t2-t1))
 sleep 5
