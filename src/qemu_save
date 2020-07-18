@@ -1,11 +1,24 @@
 #!/bin/bash
 
-while [ ! -p /inception/monitor_pipe.in ]; do
-	sleep 0.1
-done
+QPID=$(ps -A | grep qemu-system | awk '{print $1}')
 
-echo 'migrate_set_capability x-ignore-shared on' > /inception/monitor_pipe.in
-echo 'migrate_set_parameter max-bandwidth 0' > /inception/monitor_pipe.in
-echo 'stop' > /inception/monitor_pipe.in
-echo 'migrate "exec:cat > /inception/mnt/vm_save"' > /inception/monitor_pipe.in
-echo 'quit' > /inception/monitor_pipe.in
+/inception/qemu_cmd 'migrate_set_capability x-ignore-shared on'
+/inception/qemu_cmd 'migrate_set_parameter max-bandwidth 0'
+
+t1=$(/inception/vtime)
+/inception/qemu_cmd 'stop'
+t2=$(/inception/vtime)
+echo VM STOP TIME $((t2-t1))
+
+t1=$(/inception/vtime)
+/inception/qemu_cmd 'migrate "exec:cat > /inception/mnt/vm_save"'
+t2=$(/inception/vtime)
+echo VM SAVE TIME $((t2-t1))
+
+t1=$(/inception/vtime)
+echo "quit" > /inception/monitor_pipe.in
+while [ -d /proc/$QPID ]; do
+	sleep 0.01
+done
+t2=$(/inception/vtime)
+echo QEMU QUIT TIME $((t2-t1))

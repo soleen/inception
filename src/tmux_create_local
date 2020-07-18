@@ -1,8 +1,5 @@
 #!/bin/bash
 
 cd /inception
-
-cp /boot/sample_vm_bzImage /inception/
-
 resize
 tmux new -s inception './qemu_run force' \; split-window -h  'bash'
