@@ -1,6 +1,6 @@
 #!/bin/bash
 
-QPID=$(ps -A | grep qemu-system | awk '{print $1}')
+QPID=$(ps | grep qemu-system | head -n 1 | awk '{print $1}')
 
 /inception/qemu_cmd 'migrate_set_capability x-ignore-shared on'
 /inception/qemu_cmd 'migrate_set_parameter max-bandwidth 0'
