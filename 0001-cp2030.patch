@@ -1,0 +1,44 @@
+From cf8659c360c2ecd3b87e94233c9ff2b6a9af5f5e Mon Sep 17 00:00:00 2001
+From: Pavel Tatashin <pasha.tatashin@soleen.com>
+Date: Mon, 20 Jul 2020 14:29:18 -0700
+Subject: [PATCH] cp2030
+
+Signed-off-by: Pavel Tatashin <pasha.tatashin@soleen.com>
+---
+ build_rootfs    | 4 ++--
+ src/tmux_create | 4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/build_rootfs b/build_rootfs
+index 9b675db..61bdc92 100755
+--- a/build_rootfs
++++ b/build_rootfs
+@@ -51,8 +51,8 @@ sed ' /^root/ s#/bin/sh#/bin/bash# ' ./etc/passwd > p
+ mv p ./etc/passwd
+ 
+ # Auto start test on ttyS0 or tty1
+-#echo 'if [ $(tty) = "/dev/ttyS0" ]; then'	>> ./home/root/.bash_profile
+-echo 'if [ $(tty) = "/dev/tty1" ]; then'	>> ./home/root/.bash_profile
++echo 'if [ $(tty) = "/dev/ttyS0" ]; then'	>> ./home/root/.bash_profile
++#echo 'if [ $(tty) = "/dev/tty1" ]; then'	>> ./home/root/.bash_profile
+ echo '	if grep inception=tmux_restore /proc/cmdline > /dev/null; then'	>> ./home/root/.bash_profile
+ echo '		/inception/tmux_restore'				>> ./home/root/.bash_profile
+ echo '	fi'								>> ./home/root/.bash_profile
+diff --git a/src/tmux_create b/src/tmux_create
+index c3c8624..853360c 100755
+--- a/src/tmux_create
++++ b/src/tmux_create
+@@ -3,8 +3,8 @@
+ cd /inception
+ 
+ # Copy main kernel, and qemu test image
+-# mount /dev/nvme1n1p2 /mnt
+-mount /dev/nvme0n1p3 /mnt
++mount /dev/nvme1n1p2 /mnt
++#mount /dev/nvme0n1p3 /mnt
+ cp /mnt/boot/bzImage /inception/
+ umount /mnt
+ 
+-- 
+2.17.1
+
