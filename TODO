@@ -1,0 +1,8 @@
+tmux_create -> disk name
+qemu_run -> MEM -> size of the VM
+
+Run test without kexec
+
+
+memmap=nn[KMG]!ss[KMG]
+memmap=112G!16G

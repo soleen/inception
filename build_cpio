@@ -1,0 +1,12 @@
+#!/bin/bash
+
+gcc -static -Os src/vtime.c -o src/vtime
+pushd rootfs > /dev/null
+rm -rf inception
+cp -r ../src ./inception
+rm -rf ./inception/bzImage
+rm -rf ./inception/vtime.c
+find . -print0  |   cpio --null --create  --format=newc -R +0:+0 > ../rootfs.cpio
+popd > /dev/null
+rm -rf rootfs.cpio.gz
+gzip --fast rootfs.cpio
