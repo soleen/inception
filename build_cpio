@@ -3,9 +3,10 @@
 gcc -static -Os src/vtime.c -o src/vtime
 pushd rootfs > /dev/null
 rm -rf inception
-cp -r ../src ./inception
-rm -rf ./inception/bzImage
-rm -rf ./inception/vtime.c
+mkdir -p ./inception/mnt
+cp  ../src/qemu* ./inception/
+cp  ../src/tmux* ./inception/
+cp ../src/vtime ./inception/
 find . -print0  |   cpio --null --create  --format=newc -R +0:+0 > ../rootfs.cpio
 popd > /dev/null
 rm -rf rootfs.cpio.gz
