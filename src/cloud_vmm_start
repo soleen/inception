@@ -1,0 +1,2 @@
+#!/bin/bash
+/inception/cloud_hv --api-socket /tmp/cloud-hypervisor.sock

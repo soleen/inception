@@ -1,12 +1,11 @@
 #!/bin/bash
 
-gcc -static -Os src/vtime.c -o src/vtime
 pushd rootfs > /dev/null
 rm -rf inception
 mkdir -p ./inception/mnt
 cp  ../src/qemu* ./inception/
 cp  ../src/tmux* ./inception/
-cp ../src/vtime ./inception/
+cp ../src/cloud* ./inception/
 find . -print0  |   cpio --null --create  --format=newc -R +0:+0 > ../rootfs.cpio
 popd > /dev/null
 rm -rf rootfs.cpio.gz

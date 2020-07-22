@@ -6,45 +6,21 @@ cd poky
 bitbake core-image-minimal
 cd ../..
 
+set +e
+
 rm -rf rootfs
 mkdir rootfs
 pushd rootfs > /dev/null
-CPIO="poky/build/tmp/deploy/images/qemux86-64/core-image-minimal-qemux86-64.cpio.lz4"
-lz4 -dc ../$CPIO | cpio --extract --make-directories --format=newc --no-absolute-filenames
-
-# Delete uneeded files
-rm -rf ./usr/share/alsa
-rm -rf ./usr/share/mime
-rm -rf ./usr/share/icons
-rm -rf ./usr/share/consolefonts
-rm -rf ./usr/share/keymaps
-
-mv ./usr/bin/qemu-system-x86_64 ./q
-rm -rf ./usr/bin/qemu*
-mv  ./q ./usr/bin/qemu-system-x86_64
-
-pushd ./usr/share/ > /dev/null
-mv qemu qemu_bk
-mkdir qemu
-mv qemu_bk/bios-256k.bin qemu/
-mv qemu_bk/efi-e1000e.rom qemu/
-mv qemu_bk/efi-virtio.rom qemu/
-mv qemu_bk/kvmvapic.bin qemu/
-mv qemu_bk/linuxboot.bin qemu/
-mv qemu_bk/linuxboot_dma.bin qemu/
-mv qemu_bk/vgabios-stdvga.bin qemu/
-rm -r qemu_bk
-popd > /dev/null
-
-# Auto login for SystemD
-F="./lib/systemd/system/getty@.service"
-sed -i -e 's/^\(ExecStart *=.*getty \)/\1--autologin root /' $F
-F="./lib/systemd/system/serial-getty@.service"
-sed -i -e 's/^\(ExecStart *=.*getty \)/\1--autologin root /' $F
+CPIO="poky/build/tmp/deploy/images/qemux86-64/core-image-minimal-qemux86-64.cpio.gz"
+gzip -dc ../$CPIO | cpio --extract --make-directories --format=newc --no-absolute-filenames
 
 # Auto login for SysV
-#F="./etc/inittab"
-#sed -i 's/1:12345:respawn:\/sbin\/getty 38400 tty1/1:12345:respawn:\/sbin\/agetty --autologin root --noclear 38400 tty1 linux/' $F
+F="./etc/inittab"
+sed -i 's/ttyS0::respawn:\/sbin\/getty 115200 ttyS0/ttyS0::respawn:\/sbin\/getty -a root 115200 ttyS0/' $F
+sed -i 's/ttyS1::respawn:\/sbin\/getty 115200 ttyS0/ttyS0::respawn:\/sbin\/getty -a root 115200 ttyS1/' $F
+sed -i 's/1:12345:respawn:\/sbin\/getty 38400 tty1/1:12345:respawn:\/sbin\/agetty -a root --noclear 38400 tty1/' $F
+F="./bin/start_getty"
+sed -i 's/    ${setsid:-} ${getty} -L $1 $2 $3/    ${setsid:-} ${getty} -a root -L $1 $2 $3/' $F
 
 # Change root shell to bash
 sed ' /^root/ s#/bin/sh#/bin/bash# ' ./etc/passwd > p
@@ -54,7 +30,7 @@ mv p ./etc/passwd
 #echo 'if [ $(tty) = "/dev/ttyS0" ]; then'	>> ./home/root/.bash_profile
 echo 'if [ $(tty) = "/dev/tty1" ]; then'	>> ./home/root/.bash_profile
 echo '	if grep inception=tmux_restore /proc/cmdline > /dev/null; then'	>> ./home/root/.bash_profile
-echo '		/inception/tmux_restore'				>> ./home/root/.bash_profile
+echo '		/inception/cloud_tmux_restore'				>> ./home/root/.bash_profile
 echo '	fi'								>> ./home/root/.bash_profile
 echo 'fi'								>> ./home/root/.bash_profile
 popd > /dev/null

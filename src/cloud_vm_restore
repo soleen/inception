@@ -1,0 +1,23 @@
+#!/bin/bash
+
+mkdir -p /inception/mnt/snapshot
+
+while [ ! -S /tmp/cloud-hypervisor.sock ]; do
+	sleep 0.01
+done
+
+if nc 2>&1 | grep -q "BusyBox"; then
+	CMD="nc local:/tmp/cloud-hypervisor.sock"
+else
+	CMD="nc -U /tmp/cloud-hypervisor.sock"
+fi
+
+S=''
+S+='PUT /api/v1/vm.restore HTTP/1.1\r\n'
+S+='Accept: application/json\r\n'
+S+='Content-Type: application/json\r\n'
+S+='Content-Length: 48\r\n\r\n'
+S+='{"source_url":"file:///inception/mnt/snapshot/"}'
+S+='PUT /api/v1/vm.resume HTTP/1.1\r\n\r\n'
+echo -ne "$S" | $CMD
+
