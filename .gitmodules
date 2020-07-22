@@ -4,3 +4,6 @@
 [submodule "linux"]
 	path = linux
 	url = git@github.com:soleen/linux.git
+[submodule "cloud-hypervisor"]
+	path = cloud-hypervisor
+	url = https://github.com/cloud-hypervisor/cloud-hypervisor.git

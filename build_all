@@ -1,5 +1,6 @@
 #!/bin/bash
 
 ./build_rootfs
+./build_cloud_hv
 ./build_cpio
 ./build_bzImage
