@@ -1,0 +1,17 @@
+#!/bin/bash
+set -e
+
+VM_NAME=${1}
+VM_SOCKET=/tmp/$VM_NAME.socket
+
+if nc 2>&1 | grep -q "BusyBox"; then
+	CMD="nc local:$VM_SOCKET"
+else
+	CMD="nc -NU $VM_SOCKET"
+fi
+
+while [ ! -S $VM_SOCKET ]; do
+	sleep 0.01
+done
+
+echo -ne 'PUT /api/v1/vmm.shutdown HTTP/1.1\r\n\r\n' | $CMD

@@ -1,29 +1,69 @@
 #!/bin/bash
+set -e
 
-t1=$(/inception/vtime)
-while [ ! -S /tmp/cloud-hypervisor.sock ]; do
-	sleep 0.01
+VM_TYPE=linux
+VM_NUM=0
+NCPU=1
+MEM_SIZE=1G
+
+while getopts ":c:m:n:w" opt; do
+	case ${opt} in
+	c )
+	NCPU=$OPTARG
+	;;
+	m )
+	MEM_SIZE=$OPTARG
+	;;
+	n )
+	VM_NUM=$OPTARG
+	;;
+	w )
+	VM_TYPE=windows
+	;;
+	\? ) echo "Invalid option: $OPTARG" 1>&2
+	exit 1
+	;;
+	: ) echo "Invalid option: $OPTARG requires an argument" 1>&2
+	exit 1
+	;;
+	esac
 done
 
-if nc 2>&1 | grep -q "BusyBox"; then
-	CMD="nc local:/tmp/cloud-hypervisor.sock"
+VM_NAME=${VM_TYPE}${VM_NUM}
+PATH_PREFIX=/inception/mnt
+VM_PATH=/inception/mnt/$VM_NAME
+VM_SOCKET=/tmp/$VM_NAME.socket
+MEM_FILE=$VM_PATH/memory
+
+if [ "$VM_TYPE" = "windows" ]; then
+	KERNEL=$PATH_PREFIX/images/$VM_TYPE/ovmf.fd
+	DISK=$PATH_PREFIX/image/$VM_TYPE/windows.qcow
+	EXTRA_CPU=",kvm_hyperv=on,max_phys_bits=39"
+	CMDLINE=''
 else
-	CMD="nc -U /tmp/cloud-hypervisor.sock"
+	KERNEL=$PATH_PREFIX/images/$VM_TYPE/bzImage
+	CMDLINE='console=ttyS0 ip=dhcp quiet'
 fi
 
-#curl -v --unix-socket /tmp/cloud-hypervisor.sock -i \
-#     -X PUT 'http://localhost/api/v1/vm.create'  \
-#     -H 'Accept: application/json'               \
-#     -H 'Content-Type: application/json'         \
-#--data-raw '{"cpus":{"boot_vcpus": 4, "max_vcpus": 4},"kernel":{"path":"/inception/mnt/bzImage"},"cmdline":{"args":"console=ttyS0 ip=dhcp quiet"},"rng":{"src":"/dev/urandom"}, "memory":{"file":"/inception/mnt/vm_mem", "size":107374182400}, "console":{"mode":"Off"}, "serial":{"mode":"Tty"}}'
+if [ ! -z ${DISK+x} ] && [ ! -f $DISK ]; then
+	echo "Disk file is missing: $DISK" 1>&2
+fi
 
-S=''
-S+='PUT /api/v1/vm.create HTTP/1.1\r\n'
-S+='Accept: application/json\r\n'
-S+='Content-Type: application/json\r\n'
-S+='Content-Length: 275\r\n\r\n'
-S+='{"cpus":{"boot_vcpus": 4, "max_vcpus": 4},"kernel":{"path":"/inception/mnt/bzImage"},"cmdline":{"args":"console=ttyS0 ip=dhcp quiet"},"rng":{"src":"/dev/urandom"}, "memory":{"file":"/inception/mnt/vm_mem", "size":631242752}, "console":{"mode":"Off"}, "serial":{"mode":"Tty"}}'
-S+='PUT /api/v1/vm.boot HTTP/1.1\r\n\r\n'
-echo -ne "$S" | $CMD
+if [ ! -z ${KERNEL+x} ] && [ ! -f $KERNEL ]; then
+	echo "Disk file is missing: $DISK" 1>&2
+fi
 
+rm -rf $VM_PATH
+mkdir $VM_PATH
+truncate -s $MEM_SIZE $MEM_FILE
 
+/inception/cloud_hv								\
+	--api-socket	$VM_SOCKET						\
+	--cpus		boot=$NCPU$EXTRA_CPU					\
+	--memory	size=0							\
+	--kernel	$KERNEL							\
+	--memory-zone	size=$MEM_SIZE,file=$MEM_FILE,shared=on,id=pmem0	\
+	--serial	tty							\
+	--console	off							\
+	--net		tap=							\
+	--cmdline	"$CMDLINE"
