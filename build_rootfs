@@ -29,7 +29,7 @@ mv p ./etc/passwd
 # Auto start test on ttyS0 or tty1
 #echo 'if [ $(tty) = "/dev/ttyS0" ]; then'	>> ./home/root/.bash_profile
 echo 'if [ $(tty) = "/dev/tty1" ]; then'	>> ./home/root/.bash_profile
-echo '	if grep inception=tmux_restore /proc/cmdline > /dev/null; then'	>> ./home/root/.bash_profile
+echo '	if grep inception=kexec_rebooted /proc/cmdline > /dev/null; then'	>> ./home/root/.bash_profile
 echo '		/inception/cloud_tmux_restore'				>> ./home/root/.bash_profile
 echo '	fi'								>> ./home/root/.bash_profile
 echo 'fi'								>> ./home/root/.bash_profile
