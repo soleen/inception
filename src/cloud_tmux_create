@@ -7,7 +7,7 @@ mkfs.ext4 -F -m 0 -O ^has_journal /dev/pmem0
 mount -o dax /dev/pmem0 /inception/mnt
 
 mount /dev/nvme0n1p2 /mnt
-cp /home/soleen/inception/images /inception/mnt/
+cp -r /mnt/soleen/inception/images /inception/mnt/
 umount /mnt
 
 # Load next kernel for kexec

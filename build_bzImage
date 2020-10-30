@@ -4,5 +4,5 @@ pushd linux > /dev/null
 mkdir -p build
 cp ../linux_config build/.config
 make -s -k -j $(getconf _NPROCESSORS_ONLN) O=build
-cp build/arch/x86/boot/bzImage ../
+cp build/arch/x86/boot/bzImage ../images/linux/
 popd > /dev/null
