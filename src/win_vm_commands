@@ -17,7 +17,7 @@ $P "powershel"
 sleep 0.1
 $P "l" Enter; $P Enter
 sleep 0.1
-$P "for (;){Write-Host Windows VM$N' ' -NoNewLine; get-date -format h"
+$P "for (;){Write-Host ' '; Write-Host Windows VM$N' ' -NoNewLine; get-date -format h"
 sleep 0.5
 $P "h:m"
 sleep 0.5

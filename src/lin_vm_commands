@@ -1,4 +1,4 @@
 #!/bin/bash
 N=${1}
 P="tmux send-keys -t inception:0.$N "
-$P "while true; do echo -n Linux VM$N' '; date | awk '{print \$4}'; sleep 1; clear; done" Enter
+$P "while true; do echo ' '; echo -n Linux VM$N' '; date | awk '{print \$4}'; sleep 1; clear; done" Enter

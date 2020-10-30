@@ -17,4 +17,5 @@ kexec -l /inception/mnt/images/linux/bzImage --reuse-cmdline --append="inception
 rm -rf /inception/mnt/windows* /inception/mnt/linux*
 resize
 tmux new -s inception '/inception/cloud_many_create 8'
+umount /inception/mnt
 kexec -e
