@@ -3,8 +3,8 @@ set -e
 
 VM_TYPE=linux
 VM_NUM=0
-NCPU=1
-MEM_SIZE=1G
+NCPU=4
+MEM_SIZE=4G
 
 while getopts ":c:m:n:w" opt; do
 	case ${opt} in
@@ -35,26 +35,24 @@ VM_PATH=/inception/mnt/$VM_NAME
 VM_SOCKET=/tmp/$VM_NAME.socket
 MEM_FILE=$VM_PATH/memory
 
+rm -rf $VM_PATH
+mkdir $VM_PATH
+
 if [ "$VM_TYPE" = "windows" ]; then
-	KERNEL=$PATH_PREFIX/images/$VM_TYPE/ovmf.fd
-	DISK=$PATH_PREFIX/image/$VM_TYPE/windows.qcow
+	cp -r $PATH_PREFIX/images/$VM_TYPE/OVMF $VM_PATH/
+	cp $PATH_PREFIX/images/$VM_TYPE/windows-server-2019-2.qcow $VM_PATH/
+	KERNEL=$VM_PATH/OVMF/OVMF.fd
+	DISK="path=$VM_PATH/windows-server-2019-2.qcow"
 	EXTRA_CPU=",kvm_hyperv=on,max_phys_bits=39"
-	CMDLINE=''
 else
 	KERNEL=$PATH_PREFIX/images/$VM_TYPE/bzImage
 	CMDLINE='console=ttyS0 ip=dhcp quiet'
 fi
 
-if [ ! -z ${DISK+x} ] && [ ! -f $DISK ]; then
-	echo "Disk file is missing: $DISK" 1>&2
-fi
-
 if [ ! -z ${KERNEL+x} ] && [ ! -f $KERNEL ]; then
-	echo "Disk file is missing: $DISK" 1>&2
+	echo "Kernel file is missing: $KERNEL" 1>&2
 fi
 
-rm -rf $VM_PATH
-mkdir $VM_PATH
 truncate -s $MEM_SIZE $MEM_FILE
 
 /inception/cloud_hv								\
@@ -66,4 +64,6 @@ truncate -s $MEM_SIZE $MEM_FILE
 	--serial	tty							\
 	--console	off							\
 	--net		tap=							\
-	--cmdline	"$CMDLINE"
+	${CMDLINE:+'--cmdline' "$CMDLINE"}					\
+	${DISK:+'--disk' "$DISK"}
+
