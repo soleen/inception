@@ -1,0 +1,23 @@
+#!/bin/bash
+
+# Create NUM  VMs, odd are windows and even are linux
+# Also create one pane with bash
+
+NUM=$1
+if [ "$NUM" -gt 0 ]; then
+	NUM=$(($NUM - 1))
+else
+	bash
+	exit
+fi
+
+tmux split-window -t inception "/inception/cloud_many_create $NUM"
+tmux select-layout  -t inception  tiled
+
+if (( $NUM % 2 )); then
+	# Windows
+	/inception/cloud_vm_create -w -n $NUM
+else
+	# Linux
+	/inception/cloud_vm_create -n $NUM
+fi

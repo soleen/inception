@@ -1,9 +1,0 @@
-#!/bin/bash
-
-if nc 2>&1 | grep -q "BusyBox"; then
-	CMD="nc local:/tmp/cloud-hypervisor.sock"
-else
-	CMD="nc -U /tmp/cloud-hypervisor.sock"
-fi
-
-echo -ne 'PUT /api/v1/vmm.shutdown HTTP/1.1\r\n\r\n' | $CMD

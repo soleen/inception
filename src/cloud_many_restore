@@ -1,0 +1,12 @@
+#!/bin/bash
+set -em
+
+for D in $(ls /inception/mnt/); do
+	D=$(basename $D)
+	if [[ $D = linux* ]] || [[ $D = windows* ]]; then
+		tmux split-window -t inception "/inception/cloud_vm_restore $D"
+		tmux select-layout  -t inception  tiled
+	fi
+done
+	tmux split-window -t inception "bash"
+	tmux select-layout  -t inception  tiled

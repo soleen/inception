@@ -1,5 +1,0 @@
-#!/bin/bash
-
-cd /inception
-resize
-tmux new -s inception './qemu_run force' \; split-window -h  'bash'

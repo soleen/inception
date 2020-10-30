@@ -1,6 +1,9 @@
 #!/bin/bash
 set -em
 
+echo CLOUD VM RESTORE ${1}
+sleep 1
+
 VM_NAME=${1}
 VM_PATH=/inception/mnt/$VM_NAME
 VM_SNAPSHOT=$VM_PATH/snapshot

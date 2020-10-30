@@ -1,19 +1,24 @@
 #!/bin/bash
 
-mkdir -p /inception/mnt
-wipefs -fa /dev/pmem0
-mkfs.ext4 /dev/pmem0
-mount -o dax /dev/pmem0 /inception/mnt
-touch /inception/mnt/vm_mem
-
-mount /dev/nvme0n1p3 /mnt
-cp /mnt/boot/bzImage /inception/mnt/
-umount /mnt
-
-kexec -l /inception/mnt/bzImage --reuse-cmdline --append="inception=tmux_restore"
-
 cd /inception
+
+# Copy main kernel, and qemu test image
+# mount /dev/nvme1n1p2 /mnt
+#mount /dev/nvme0n1p3 /mnt
+#cp /mnt/boot/bzImage /inception/
+#umount /mnt
+
+# Load next kernel for kexec
+#kexec -l /inception/bzImage --reuse-cmdline --append="inception=tmux_restore"
+
+#resize
+#tmux new -s inception './qemu_run force' \; split-window -h  'bash'
+
+# Execute next kernel
+#kexec -e
+
+
+# Create new detached session
+rm -rf /inception/mnt/windows* /inception/mnt/linux*
 resize
-tmux new -s inception './cloud_vmm_start' \; split-window -h  './cloud_vm_start' \; split-window bash
-umount /inception/mnt
-kexec -e
+tmux new -s inception '/inception/cloud_many_create 8'

@@ -1,5 +1,0 @@
-#!/bin/bash
-
-cd /inception
-resize
-tmux new -s inception './qemu_run' \; split-window -h  './qemu_restore' \; split-window bash

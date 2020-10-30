@@ -10,8 +10,12 @@ else
 	CMD="nc -NU $VM_SOCKET"
 fi
 
-while [ ! -S $VM_SOCKET ]; do
-	sleep 0.01
-done
+#while [ ! -S $VM_SOCKET ]; do
+#	sleep 0.01
+#done
+if [ ! -S $VM_SOCKET ]; then
+	echo $VM_SOCKET is missing
+	exit
+fi
 
 echo -ne 'PUT /api/v1/vmm.shutdown HTTP/1.1\r\n\r\n' | $CMD

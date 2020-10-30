@@ -16,6 +16,7 @@ while getopts ":c:m:n:w" opt; do
 	;;
 	n )
 	VM_NUM=$OPTARG
+	echo VM_NUM $VM_NUM
 	;;
 	w )
 	VM_TYPE=windows

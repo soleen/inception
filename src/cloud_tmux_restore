@@ -1,8 +1,5 @@
 #!/bin/bash
 
-mkdir -p /inception/mnt
-mount -o dax /dev/pmem0 /inception/mnt
-
 cd /inception
 resize
-tmux new -s inception './cloud_vmm_start' \; split-window -h  './cloud_vm_restore' \; split-window bash
+tmux new -s inception '/inception/cloud_many_restore'
