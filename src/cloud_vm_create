@@ -54,7 +54,8 @@ if [ ! -z ${KERNEL+x} ] && [ ! -f $KERNEL ]; then
 	echo "Kernel file is missing: $KERNEL" 1>&2
 fi
 
-truncate -s $MEM_SIZE $MEM_FILE
+#truncate -s $MEM_SIZE $MEM_FILE
+fallocate -l $MEM_SIZE $MEM_FILE
 
 /inception/cloud_hv								\
 	--api-socket	$VM_SOCKET						\

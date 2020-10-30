@@ -13,7 +13,9 @@ $P "" Enter	# Domain
 sleep 0.1
 $P "Admin123" Enter
 sleep 0.1
-$P "powershell" Enter; $P Enter
+$P "powershel"
+sleep 0.1
+$P "l" Enter; $P Enter
 sleep 0.1
 $P "for (;){Write-Host Windows VM$N' ' -NoNewLine; get-date -format h"
 sleep 0.5
@@ -23,4 +25,4 @@ $P "m:s"
 sleep 0.5
 $P "s; start-sle"
 sleep 0.5
-$P "ep 1}" Enter; $P Enter
+$P "ep 1; clear}" Enter; $P Enter

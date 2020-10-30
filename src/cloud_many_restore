@@ -8,5 +8,6 @@ for D in $(ls /inception/mnt/); do
 		tmux select-layout  -t inception  tiled
 	fi
 done
-	tmux split-window -t inception "bash"
-	tmux select-layout  -t inception  tiled
+
+tmux select-layout  -t inception  tiled
+bash

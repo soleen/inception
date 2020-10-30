@@ -1,4 +1,5 @@
 #!/bin/bash
+mount -o dax /dev/pmem0 /inception/mnt
 
 cd /inception
 resize

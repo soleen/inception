@@ -1,9 +1,6 @@
 #!/bin/bash
 set -em
 
-echo CLOUD VM RESTORE ${1}
-sleep 1
-
 VM_NAME=${1}
 VM_PATH=/inception/mnt/$VM_NAME
 VM_SNAPSHOT=$VM_PATH/snapshot
@@ -21,7 +18,7 @@ S+='PUT /api/v1/vm.resume HTTP/1.1\r\n\r\n'
 # wait for socket file in backgroud, and send resume command to it as it appears
 while [ ! -S $VM_SOCKET ]; do
 	sleep 0.01
-done && echo -ne "$S" | $CMD &
+done && echo -ne "$S" | $CMD 2>&1 > /dev/null &
 
 /inception/cloud_hv								\
 	--api-socket $VM_SOCKET							\
