@@ -18,13 +18,13 @@ sleep 0.1
 $P "l" Enter; $P Enter
 sleep 0.1
 $P "for(\$i=0; ;\$i+"
-sleep 0.5
+sleep 0.6
 $P "+){if(\$i%2 -eq 0){Write-Host ' '}; Write-Host Windows VM$N' ' -NoNewLine; get-date -format h"
-sleep 0.5
+sleep 0.6
 $P "h:m"
-sleep 0.5
+sleep 0.6
 $P "m:s"
-sleep 0.5
+sleep 0.6
 $P "s; start-sle"
-sleep 0.5
+sleep 0.6
 $P "ep 1; clear}" Enter; $P Enter
