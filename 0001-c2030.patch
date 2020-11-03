@@ -1,15 +1,15 @@
-From 918240f97a6f98f91bb91e7cce873c4b4ff1f118 Mon Sep 17 00:00:00 2001
+From 5c66077d65836082e7c81ce2ef3f269833a32ef0 Mon Sep 17 00:00:00 2001
 From: Pavel Tatashin <pasha.tatashin@soleen.com>
-Date: Wed, 22 Jul 2020 13:30:00 -0700
+Date: Fri, 30 Oct 2020 09:52:48 -0700
 Subject: [PATCH] c2030
 
 ---
  build_rootfs          | 4 ++--
- src/cloud_tmux_create | 3 ++-
- 2 files changed, 4 insertions(+), 3 deletions(-)
+ src/cloud_tmux_create | 6 ++++--
+ 2 files changed, 6 insertions(+), 4 deletions(-)
 
 diff --git a/build_rootfs b/build_rootfs
-index bc48f25..ea3d89f 100755
+index 70d33ce..8c2d406 100755
 --- a/build_rootfs
 +++ b/build_rootfs
 @@ -27,8 +27,8 @@ sed ' /^root/ s#/bin/sh#/bin/bash# ' ./etc/passwd > p
@@ -20,23 +20,26 @@ index bc48f25..ea3d89f 100755
 -echo 'if [ $(tty) = "/dev/tty1" ]; then'	>> ./home/root/.bash_profile
 +echo 'if [ $(tty) = "/dev/ttyS0" ]; then'	>> ./home/root/.bash_profile
 +#echo 'if [ $(tty) = "/dev/tty1" ]; then'	>> ./home/root/.bash_profile
- echo '	if grep inception=tmux_restore /proc/cmdline > /dev/null; then'	>> ./home/root/.bash_profile
+ echo '	if grep inception=kexec_rebooted /proc/cmdline > /dev/null; then'	>> ./home/root/.bash_profile
  echo '		/inception/cloud_tmux_restore'				>> ./home/root/.bash_profile
  echo '	fi'								>> ./home/root/.bash_profile
 diff --git a/src/cloud_tmux_create b/src/cloud_tmux_create
-index d904fe9..781d9b9 100755
+index 77ad00c..8db85cd 100755
 --- a/src/cloud_tmux_create
 +++ b/src/cloud_tmux_create
-@@ -6,7 +6,8 @@ mkfs.ext4 /dev/pmem0
+@@ -6,8 +6,10 @@ wipefs -f -a /dev/pmem0
+ mkfs.ext4 -F -m 0 -O ^has_journal /dev/pmem0
  mount -o dax /dev/pmem0 /inception/mnt
- touch /inception/mnt/vm_mem
  
--mount /dev/nvme0n1p3 /mnt
+-mount /dev/nvme0n1p2 /mnt
+-cp -r /mnt/soleen/inception/images /inception/mnt/
++#mount /dev/nvme0n1p2 /mnt
++#cp -r /mnt/soleen/inception/images /inception/mnt/
 +mount /dev/nvme1n1p2 /mnt
-+#mount /dev/nvme0n1p3 /mnt
- cp /mnt/boot/bzImage /inception/mnt/
++cp -r /mnt/home/patatash/inception/images /inception/mnt
  umount /mnt
  
+ # Load next kernel for kexec
 -- 
 2.17.1
 
