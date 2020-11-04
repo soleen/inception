@@ -30,14 +30,14 @@ while getopts ":c:m:n:w" opt; do
 	esac
 done
 
-VM_NAME=${VM_TYPE}${VM_NUM}
+VM_NAME=${VM_NUM}
 PATH_PREFIX=/inception/mnt
-VM_PATH=/inception/mnt/$VM_NAME
+VM_PATH=/inception/mnt/vms/$VM_NAME
 VM_SOCKET=/tmp/$VM_NAME.socket
 MEM_FILE=$VM_PATH/memory
 
 rm -rf $VM_PATH
-mkdir $VM_PATH
+mkdir -p $VM_PATH
 
 if [ "$VM_TYPE" = "windows" ]; then
 	cp -r $PATH_PREFIX/images/$VM_TYPE/OVMF $VM_PATH/

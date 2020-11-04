@@ -1,0 +1,13 @@
+#!/bin/bash
+set -em
+
+NUM=$(ls /inception/mnt/vms/ | wc -l)
+
+for ((i = 0; i < $NUM; i++)); do
+	if $(tmux capture-pane -pt inception.$i | grep -q inception); then
+		/inception/cloud_vm_commands_linux $i &
+	else
+		/inception/cloud_vm_commands_windows $i &
+	fi
+done
+wait

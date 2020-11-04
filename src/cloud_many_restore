@@ -1,13 +1,13 @@
 #!/bin/bash
-set -em
 
-for D in $(ls /inception/mnt/); do
-	D=$(basename $D)
-	if [[ $D = linux* ]] || [[ $D = windows* ]]; then
-		tmux split-window -t inception "/inception/cloud_vm_restore $D"
-		tmux select-layout  -t inception  tiled
-	fi
-done
+NUM=$1
+if [ "$NUM" -gt 0 ]; then
+	NUM=$(($NUM - 1))
+else
+	bash
+	exit
+fi
 
+tmux split-window -t inception "/inception/cloud_many_restore $NUM"
 tmux select-layout  -t inception  tiled
-bash
+/inception/cloud_vm_restore $NUM

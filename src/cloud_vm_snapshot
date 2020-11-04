@@ -3,8 +3,7 @@ set -e
 
 VM_NAME=${1}
 VM_SOCKET=/tmp/$VM_NAME.socket
-PATH_PREFIX=/inception/mnt
-VM_PATH=/inception/mnt/$VM_NAME
+VM_PATH=/inception/mnt/vms/$VM_NAME
 VM_SNAPSHOT=$VM_PATH/snapshot
 VM_SNAPSHOT_LEN=${#VM_SNAPSHOT}
 LEN=$(($VM_SNAPSHOT_LEN + 30))

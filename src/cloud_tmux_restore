@@ -3,4 +3,5 @@ mount -o dax /dev/pmem0 /inception/mnt
 
 cd /inception
 resize
-tmux new -s inception '/inception/cloud_many_restore'
+NUM=$(ls /inception/mnt/vms/ | wc -l)
+tmux new -s inception "/inception/cloud_many_restore $NUM"

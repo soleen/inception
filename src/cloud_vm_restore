@@ -2,7 +2,7 @@
 set -em
 
 VM_NAME=${1}
-VM_PATH=/inception/mnt/$VM_NAME
+VM_PATH=/inception/mnt/vms/$VM_NAME
 VM_SNAPSHOT=$VM_PATH/snapshot
 VM_SOCKET=/tmp/$VM_NAME.socket
 

@@ -1,11 +1,9 @@
 #!/bin/bash
 set -em
 
-for D in $(ls /inception/mnt/); do
+for D in $(ls /inception/mnt/vms/); do
 	D=$(basename $D)
-	if [[ $D = linux* ]] || [[ $D = windows* ]]; then
-		/inception/cloud_vm_kill $D &
-	fi
+	/inception/cloud_vm_kill $D &
 done
 wait
 tmux kill-window -t inception
