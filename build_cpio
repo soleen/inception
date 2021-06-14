@@ -3,9 +3,6 @@
 pushd rootfs > /dev/null
 rm -rf inception
 mkdir -p ./inception/mnt
-cp  ../src/lin_vm_commands ./inception/
-cp  ../src/win_vm_commands ./inception/
-cp  ../src/vm_commands ./inception/
 cp ../src/cloud* ./inception/
 find . -print0  |   cpio --null --create  --format=newc -R +0:+0 > ../rootfs.cpio
 popd > /dev/null
